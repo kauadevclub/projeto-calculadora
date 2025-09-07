@@ -20,12 +20,7 @@ Projeto criado para prática e demonstração das minhas habilidades como desenv
 - **HTML5** → estrutura da aplicação  
 - **CSS3** → estilização e design  
 - **JavaScript** → lógica e interatividade  
-
----
-
-## 📸 Preview
-![Preview da Calculadora](./preview.png)  
-*(adicione aqui um print da sua calculadora ou gif mostrando ela funcionando)*  
+ 
 
 ---
 
