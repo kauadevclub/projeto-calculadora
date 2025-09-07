@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora do Kauã André | Dev.Frontend</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        .btn-press {
+            transform: scale(0.95);
+            transition: transform 0.1s ease;
+        }
+        .calculator {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .display {
+            min-height: 100px;
+            word-break: break-all;
+        }
+        .history-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 0;
+        }
+        .scientific-btn {
+            transition: all 0.3s ease;
+        }
+        .dark .scientific-btn {
+            background-color: #374151;
+        }
+        .light .scientific-btn {
+            background-color: #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <h1 class="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">Calculadora do Kauã André | Dev.Frontend</h1>
+            
+            <div class="calculator bg-white dark:bg-gray-800 p-6 rounded-2xl">
+                <!-- Display -->
+                <div class="display bg-gray-50 dark:bg-gray-700 p-4 rounded-lg mb-4 text-right">
+                    <div id="history" class="text-gray-500 dark:text-gray-400 text-sm h-6 overflow-hidden"></div>
+                    <div id="current" class="text-3xl font-semibold text-gray-800 dark:text-white mt-2"></div>
+                </div>
+                
+                <!-- Scientific Buttons (Hidden by default) -->
+                <div id="scientific-buttons" class="grid grid-cols-5 gap-2 mb-4 hidden">
+                    <button class="scientific-btn p-2 rounded-lg text-gray-700 dark:text-gray-200 font-medium" onclick="addToDisplay('sin(')">sin</button>
+                    <button class="scientific-btn p-2 rounded-lg text-gray-700 dark:text-gray-200 font-medium" onclick="addToDisplay('cos(')">cos</button>
+                    <button class="scientific-btn p-2 rounded-lg text-gray-700 dark:text-gray-200 font-medium" onclick="addToDisplay('tan(')">tan</button>
+                    <button class="scientific-btn p-2 rounded-lg text-gray-700 dark:text-gray-200 font-medium" onclick="addToDisplay('log(')">log</button>
+                    <button class="scientific-btn p-2 rounded-lg text-gray-700 dark:text-gray-200 font-medium" onclick="addToDisplay('ln(')">ln</button>
+                </div>
+                
+                <!-- Main Buttons -->
+                <div class="grid grid-cols-4 gap-3">
+                    <!-- Row 1 -->
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="clearAll()">AC</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="clearLast()">C</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('%')">%</button>
+                    <button class="bg-blue-500 hover:bg-blue-600 p-4 rounded-lg text-white font-bold" onclick="addToDisplay('/')">÷</button>
+                    
+                    <!-- Row 2 -->
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="memoryAdd()">M+</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="memorySubtract()">M-</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="memoryRecall()">MR</button>
+                    <button class="bg-blue-500 hover:bg-blue-600 p-4 rounded-lg text-white font-bold" onclick="addToDisplay('*')">×</button>
+                    
+                    <!-- Row 3 -->
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('7')">7</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('8')">8</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('9')">9</button>
+                    <button class="bg-blue-500 hover:bg-blue-600 p-4 rounded-lg text-white font-bold" onclick="addToDisplay('-')">−</button>
+                    
+                    <!-- Row 4 -->
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('4')">4</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('5')">5</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('6')">6</button>
+                    <button class="bg-blue-500 hover:bg-blue-600 p-4 rounded-lg text-white font-bold" onclick="addToDisplay('+')">+</button>
+                    
+                    <!-- Row 5 -->
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('1')">1</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('2')">2</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('3')">3</button>
+                    <button class="bg-blue-500 hover:bg-blue-600 p-4 rounded-lg text-white font-bold" onclick="calculate()">=</button>
+                    
+                    <!-- Row 6 -->
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="toggleScientific()">Sci</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('0')">0</button>
+                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-4 rounded-lg text-gray-800 dark:text-white font-bold" onclick="addToDisplay('.')">.</button>
+                    <button class="bg-blue-500 hover:bg-blue-600 p-4 rounded-lg text-white font-bold" onclick="squareRoot()">√</button>
+                </div>
+                
+                <!-- Additional Buttons -->
+                <div class="grid grid-cols-3 gap-3 mt-3">
+                    <button class="bg-purple-500 hover:bg-purple-600 p-4 rounded-lg text-white font-bold" onclick="power()">x^y</button>
+                    <button class="bg-purple-500 hover:bg-purple-600 p-4 rounded-lg text-white font-bold" onclick="square()">x²</button>
+                    <button class="bg-purple-500 hover:bg-purple-600 p-4 rounded-lg text-white font-bold" onclick="inverse()">1/x</button>
+                </div>
+                
+                <!-- Theme Toggle -->
+                <div class="flex justify-center mt-4">
+                    <button id="theme-toggle" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-4 py-2 rounded-lg text-gray-800 dark:text-white font-medium flex items-center gap-2" onclick="toggleTheme()">
+                        <i data-feather="moon"></i>
+                        <span>Alternar Tema</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- History Panel -->
+            <div class="calculator bg-white dark:bg-gray-800 p-6 rounded-2xl mt-6 max-h-64 overflow-y-auto">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">Histórico</h2>
+                <div id="history-panel" class="text-gray-700 dark:text-gray-300"></div>
+                <button class="mt-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm" onclick="clearHistory()">Limpar Histórico</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize
+        feather.replace();
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDisplay();
+            loadHistory();
+            loadTheme();
+            
+            // Add button press animation
+            document.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('mousedown', () => {
+                    btn.classList.add('btn-press');
+                });
+                btn.addEventListener('mouseup', () => {
+                    btn.classList.remove('btn-press');
+                });
+                btn.addEventListener('mouseleave', () => {
+                    btn.classList.remove('btn-press');
+                });
+            });
+        });
+
+        // Calculator state
+        let currentInput = '0';
+        let previousInput = '';
+        let operation = null;
+        let resetScreen = false;
+        let memory = 0;
+        let calculationHistory = [];
+        let isScientific = false;
+
+        // Display functions
+        function updateDisplay() {
+            const currentDisplay = document.getElementById('current');
+            const historyDisplay = document.getElementById('history');
+            
+            currentDisplay.textContent = currentInput;
+            historyDisplay.textContent = previousInput + (operation ? ' ' + operation : '');
+        }
+
+        // Input handling
+        function addToDisplay(value) {
+            if (currentInput === '0' || resetScreen) {
+                currentInput = value;
+                resetScreen = false;
+            } else {
+                currentInput += value;
+            }
+            updateDisplay();
+        }
+
+        function clearAll() {
+            currentInput = '0';
+            previousInput = '';
+            operation = null;
+            updateDisplay();
+        }
+
+        function clearLast() {
+            if (currentInput.length === 1) {
+                currentInput = '0';
+            } else {
+                currentInput = currentInput.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        // Operations
+        function setOperation(op) {
+            if (operation !== null) calculate();
+            previousInput = currentInput;
+            operation = op;
+            resetScreen = true;
+            updateDisplay();
+        }
+
+        function calculate() {
+            let result;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            
+            if (isNaN(prev) || isNaN(current)) return;
+            
+            switch (operation) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = prev / current;
+                    break;
+                case '%':
+                    result = prev % current;
+                    break;
+                case '^':
+                    result = Math.pow(prev, current);
+                    break;
+                default:
+                    // If no operation, just show current input
+                    return;
+            }
+            
+            // Add to history
+            const operationSymbol = operation === '*' ? '×' : 
+                                  operation === '/' ? '÷' : 
+                                  operation === '^' ? '^' : operation;
+            const calculation = `${previousInput} ${operationSymbol} ${currentInput} = ${result}`;
+            calculationHistory.unshift(calculation);
+            saveHistory();
+            updateHistoryPanel();
+            
+            currentInput = result.toString();
+            operation = null;
+            previousInput = '';
+            resetScreen = true;
+            updateDisplay();
+        }
+
+        // Advanced operations
+        function squareRoot() {
+            const num = parseFloat(currentInput);
+            if (num >= 0) {
+                const result = Math.sqrt(num);
+                addToHistory(`√${num} = ${result}`);
+                currentInput = result.toString();
+                updateDisplay();
+            } else {
+                currentInput = 'Error';
+                updateDisplay();
+                setTimeout(() => {
+                    currentInput = '0';
+                    updateDisplay();
+                }, 1000);
+            }
+        }
+
+        function square() {
+            const num = parseFloat(currentInput);
+            const result = num * num;
+            addToHistory(`${num}² = ${result}`);
+            currentInput = result.toString();
+            updateDisplay();
+        }
+
+        function power() {
+            previousInput = currentInput;
+            operation = '^';
+            resetScreen = true;
+            updateDisplay();
+        }
+
+        function inverse() {
+            const num = parseFloat(currentInput);
+            if (num !== 0) {
+                const result = 1 / num;
+                addToHistory(`1/${num} = ${result}`);
+                currentInput = result.toString();
+                updateDisplay();
+            } else {
+                currentInput = 'Error';
+                updateDisplay();
+                setTimeout(() => {
+                    currentInput = '0';
+                    updateDisplay();
+                }, 1000);
+            }
+        }
+
+        // Memory functions
+        function memoryAdd() {
+            memory += parseFloat(currentInput) || 0;
+        }
+
+        function memorySubtract() {
+            memory -= parseFloat(currentInput) || 0;
+        }
+
+        function memoryRecall() {
+            currentInput = memory.toString();
+            updateDisplay();
+        }
+
+        function memoryClear() {
+            memory = 0;
+        }
+
+        // History functions
+        function addToHistory(calculation) {
+            calculationHistory.unshift(calculation);
+            if (calculationHistory.length > 10) {
+                calculationHistory.pop();
+            }
+            saveHistory();
+            updateHistoryPanel();
+        }
+
+        function updateHistoryPanel() {
+            const historyPanel = document.getElementById('history-panel');
+            historyPanel.innerHTML = '';
+            
+            calculationHistory.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.textContent = item;
+                historyPanel.appendChild(div);
+            });
+        }
+
+        function clearHistory() {
+            calculationHistory = [];
+            saveHistory();
+            updateHistoryPanel();
+        }
+
+        function saveHistory() {
+            localStorage.setItem('calculatorHistory', JSON.stringify(calculationHistory));
+        }
+
+        function loadHistory() {
+            const savedHistory = localStorage.getItem('calculatorHistory');
+            if (savedHistory) {
+                calculationHistory = JSON.parse(savedHistory);
+                updateHistoryPanel();
+            }
+        }
+
+        // Theme functions
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            document.body.classList.toggle('light');
+            saveTheme();
+            feather.replace();
+        }
+
+        function saveTheme() {
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('calculatorTheme', isDark ? 'dark' : 'light');
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('calculatorTheme') || 'light';
+            document.body.classList.add(savedTheme);
+            if (savedTheme === 'dark') {
+                document.body.classList.remove('light');
+            } else {
+                document.body.classList.remove('dark');
+            }
+        }
+
+        // Scientific mode
+        function toggleScientific() {
+            isScientific = !isScientific;
+            const scientificButtons = document.getElementById('scientific-buttons');
+            scientificButtons.classList.toggle('hidden');
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') addToDisplay(e.key);
+            else if (e.key === '.') addToDisplay('.');
+            else if (e.key === '+') setOperation('+');
+            else if (e.key === '-') setOperation('-');
+            else if (e.key === '*') setOperation('*');
+            else if (e.key === '/') setOperation('/');
+            else if (e.key === '%') addToDisplay('%');
+            else if (e.key === 'Enter' || e.key === '=') {
+                calculate();
+                // Simulate button press for equals button
+                const equalsBtn = document.querySelector('button[onclick="calculate()"]');
+                if (equalsBtn) {
+                    equalsBtn.classList.add('btn-press');
+                    setTimeout(() => equalsBtn.classList.remove('btn-press'), 100);
+                }
+            }
+            else if (e.key === 'Escape') clearAll();
+            else if (e.key === 'Backspace') clearLast();
+        });
+    </script>
+</body>
+</html>
