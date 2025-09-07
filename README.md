@@ -1,4 +1,5 @@
 # 🧮 Calculadora do Kauã
+https://projetopessoalcalculadora.netlify.app/
 
 Uma calculadora funcional desenvolvida com **HTML, CSS e JavaScript**, capaz de realizar as principais operações matemáticas.  
 Projeto criado para prática e demonstração das minhas habilidades como desenvolvedor front-end.  
